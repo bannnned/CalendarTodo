@@ -2,8 +2,8 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import s from './Calendar.module.css';
 
-const Calendar = ({ handleDateClick }) => {
-  // состояние на текущий месяц
+const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
+  // состояние на текущую дату
   const [date, setDate] = useState(new Date());
 
   const handlePrevMonth = () => {
@@ -51,6 +51,11 @@ const Calendar = ({ handleDateClick }) => {
           }
         >
           {i}
+          {tasks
+            .filter((el) => el.date === currentDate.toLocaleDateString('ru-RU'))
+            .map((el) => (
+              <p key={el.id}>{el.text}</p>
+            ))}
         </div>
       );
     }

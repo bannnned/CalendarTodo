@@ -1,34 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import s from './Todo.module.css';
+import { type Task } from '../CalendarTodo/type';
 
-type Task = { id: number; text: string };
+const Todo = ({ currentDate, setIsModalOpen, setTasks }) => {
+  // Состояние для задач текущего дня
+  const [tasksForDay, setTasksForDay] = useState<Task[]>([]);
 
-const Todo = ({ currentDate, setIsModalOpen }) => {
-  // массив с задачами
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [input, setInput] = useState('');
 
+  // добавить задачу
   const handleAddTask = () => {
     // валидация
     if (input.trim() !== '') {
       const newTask = {
         id: Date.now(),
         text: input.trim(),
+        date: currentDate,
       };
-      setTasks([...tasks, newTask]);
+      setTasksForDay([...tasksForDay, newTask]);
       setInput('');
       // Сохраняем задачи в localStorage
-      localStorage.setItem(currentDate, JSON.stringify([...tasks, newTask]));
+      localStorage.setItem(
+        currentDate,
+        JSON.stringify([...tasksForDay, newTask])
+      );
+      // Обновляем общий список задач
+      setTasks((prevTasks) => [...prevTasks, newTask]);
     } else {
       alert('Поле не может быть пустым');
     }
+  };
+
+  // удалить задачу
+  const handleDelTask = (id) => {
+    const delTasks = tasksForDay.filter((task) => task.id !== id);
+    setTasksForDay(delTasks);
+    // перезаписываем с новыми данными
+    localStorage.setItem(currentDate, JSON.stringify(delTasks));
+    // обновляем общее состояние
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   };
 
   useEffect(() => {
     // Получаем задачи из localStorage на выбранную дату
     const localStorageTasks = localStorage.getItem(currentDate);
     const allTasks = localStorageTasks ? JSON.parse(localStorageTasks) : [];
-    setTasks(allTasks);
+    setTasksForDay(allTasks);
   }, [currentDate]);
 
   return (
@@ -40,12 +57,12 @@ const Todo = ({ currentDate, setIsModalOpen }) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <button onClick={handleAddTask}>Добавить</button>
+      <button onClick={handleAddTask}>Добавить</button> //
       <ul>
-        {tasks.map((task) => (
+        {tasksForDay.map((task) => (
           <li key={task.id}>
             {task.text}
-            <button>Удалить</button>
+            <button onClick={() => handleDelTask(task.id)}>Удалить</button>
           </li>
         ))}
       </ul>
