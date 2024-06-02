@@ -1,0 +1,32 @@
+.calendar {
+    font-family: Arial, sans-serif;
+}
+
+.month {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.days {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.day {
+    flex-basis: calc(100% / 7); /* Фиксированная ширина каждого дня */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.date {
+    background-color: #fff;
+}
+
+.empty {
+    background-color: #ccc;
+}
+
