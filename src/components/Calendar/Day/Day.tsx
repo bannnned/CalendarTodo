@@ -10,13 +10,23 @@ const Day = ({
   tasksToShow,
   handleDateClick,
   index,
+  isHoliday,
 }) => {
+
+
   return (
     <div
       className={s.day}
       onClick={() => handleDateClick(currentDate.toLocaleDateString('ru-RU'))}
     >
-      <p className={clsx(s.dayNumber, { [s.today]: isToday })}>{index}</p>
+      <p
+        className={clsx(s.dayNumber, {
+          [s.today]: isToday,
+          [s.holiday]: isHoliday,
+        })}
+      >
+        {index}
+      </p>
       <div className={s.dayTasks}>
         {tasksToShow.map((el) => {
           // Выбор случайного цвета из массива

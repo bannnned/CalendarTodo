@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import s from './Calendar.module.css';
 import EmptyDay from '../EmptyDay/EmptyDay';
 import Day from '../Day/Day';
@@ -8,6 +8,31 @@ const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
   const today = new Date();
   // состояние на текущую дату
   const [date, setDate] = useState(new Date());
+  // Состояние для хранения информации о праздничных днях
+  const [holidays, setHolidays] = useState([]);
+
+  console.log(holidays);
+  // 0,1,7,8,11,14,15,21,22,28,29
+  // Функция для загрузки информации о праздничных днях для заданного месяца
+  const dayOffApi = async (year, month) => {
+    try {
+      const response = await fetch(
+        `https://isdayoff.ru/api/getdata?year=${year}&month=${month}&cc=ru`
+      );
+      const data = await response.text();
+      //
+      const dayOff = [];
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] === '1') {
+          // Если цифра равна 1, это нерабочий день
+          dayOff.push(i);
+        }
+      }
+      setHolidays(dayOff);
+    } catch (error) {
+      console.error('УПС, не узнаем когда отдыхать');
+    }
+  };
 
   // получае первое число прошлого мес
   const handlePrevMonth = () => {
@@ -48,6 +73,11 @@ const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
       if (currentDate.toDateString() === today.toDateString()) {
         isToday = true;
       }
+      // выделяем выходные
+      let isHoliday = false;
+      if (holidays && holidays.includes(i - 1)) {
+        isHoliday = true;
+      }
 
       //массив с задачами для одного текущего дня
       const tasksForDay = tasks.filter(
@@ -64,12 +94,20 @@ const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
           tasksToShow={tasksToShow}
           handleDateClick={handleDateClick}
           index={i}
+          isHoliday={isHoliday}
         />
       );
     }
 
     return days;
   };
+
+  // получаем празднечные дни
+  useEffect(() => {
+    const currentYear = date.getFullYear();
+    const currentMonth = date.getMonth() + 1;
+    dayOffApi(currentYear, currentMonth);
+  }, [date]);
 
   return (
     <div className={s.calendar}>

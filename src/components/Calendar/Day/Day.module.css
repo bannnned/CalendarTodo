@@ -54,6 +54,10 @@
     display: none;
 }
 
+.holiday {
+    color: red
+}
+
 @media (max-width: 1000px) {
     .dayTasks {
         display: none;
