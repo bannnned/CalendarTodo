@@ -1,0 +1,65 @@
+.day {
+    flex-basis: calc(100% / 7);
+    /* Фиксированная ширина каждого дня */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-align: center;
+    height: 110px;
+    overflow: hidden;
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.dayTasks {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.dayTask {
+    margin: 2px 0;
+    overflow: hidden;
+    /* без переноса*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
+    padding-left: 5px;
+}
+
+
+.dayNumber {
+    align-self: flex-end;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.today {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgb(204, 76, 8);
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+.more {
+    align-self: flex-start;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 1000px) {
+    .dayTasks {
+        display: none;
+    }
+
+    .hidden {
+        display: block;
+    }
+}

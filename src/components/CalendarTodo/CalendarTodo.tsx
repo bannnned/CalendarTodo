@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import Todo from '../Todo/Todo';
-import Calendar from '../Calendar/Calendar';
-import { type Task } from './type';
+import Calendar from '../Calendar/Calendar/Calendar';
+import { type Task } from '../type';
+import s from './CalemdarTodo.module.css';
 
 const CalendarTodo = (): JSX.Element => {
   // выбранная даты для отрисовки туду
@@ -12,7 +13,7 @@ const CalendarTodo = (): JSX.Element => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   // выбор даты
-  const handleDateClick = (date): void => {
+  const handleDateClick = (date: string) => {
     setCurrentDate(date);
     setIsModalOpen(true);
   };
@@ -27,16 +28,19 @@ const CalendarTodo = (): JSX.Element => {
     });
     setTasks(allTasks);
   }, []);
+
   return (
     <>
-      <Calendar handleDateClick={handleDateClick} tasks={tasks} />
-      {isModalOpen && (
-        <Todo
-          currentDate={currentDate}
-          setIsModalOpen={setIsModalOpen}
-          setTasks={setTasks}
-        />
-      )}
+      <div className={s.container}>
+        {isModalOpen && (
+          <Todo
+            currentDate={currentDate}
+            setIsModalOpen={setIsModalOpen}
+            setTasks={setTasks}
+          />
+        )}
+        <Calendar handleDateClick={handleDateClick} tasks={tasks} />
+      </div>
     </>
   );
 };

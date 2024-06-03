@@ -1,0 +1,13 @@
+.emptyDay {
+    flex-basis: calc(100% / 7);
+    /* Фиксированная ширина каждого дня */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-align: center;
+    height: 110px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: #280d1521;
+}

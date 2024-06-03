@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import s from './Todo.module.css';
-import { type Task } from '../CalendarTodo/type';
+import { type Task } from '../type';
 
 const Todo = ({ currentDate, setIsModalOpen, setTasks }) => {
   // Состояние для задач текущего дня
@@ -17,7 +17,7 @@ const Todo = ({ currentDate, setIsModalOpen, setTasks }) => {
         text: input.trim(),
         date: currentDate,
       };
-      setTasksForDay([...tasksForDay, newTask]);
+      setTasksForDay((prevTasks) => [...prevTasks, newTask]);
       setInput('');
       // Сохраняем задачи в localStorage
       localStorage.setItem(
@@ -50,19 +50,27 @@ const Todo = ({ currentDate, setIsModalOpen, setTasks }) => {
 
   return (
     <div className={s.modal}>
-      <button onClick={(prev) => setIsModalOpen(!prev)}>Закрыть</button>
-      <h2>Задачи на {currentDate}</h2>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button onClick={handleAddTask}>Добавить</button> //
-      <ul>
+      <button onClick={(prev) => setIsModalOpen(!prev)} className={s.btnClose}>
+        &lsaquo;
+      </button>
+      <h2 className={s.modalTitle}>Задачи на {currentDate}</h2>
+      <div className={s.modalHeader}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button onClick={handleAddTask} className={s.btnAdd}>
+          Добавить
+        </button>
+      </div>
+      <ul className={s.modalTasks}>
         {tasksForDay.map((task) => (
-          <li key={task.id}>
+          <li key={task.id} className={s.modalTask}>
             {task.text}
-            <button onClick={() => handleDelTask(task.id)}>Удалить</button>
+            <button onClick={() => handleDelTask(task.id)} className={s.btnDel}>
+              Х
+            </button>
           </li>
         ))}
       </ul>
