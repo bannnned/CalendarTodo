@@ -2,19 +2,23 @@ import { useEffect, useState } from 'react';
 import s from './Calendar.module.css';
 import EmptyDay from '../EmptyDay/EmptyDay';
 import Day from '../Day/Day';
+import { type Task } from '../../type';
 
-const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
+type CalendarProps = {
+  handleDateClick: (value: string) => void;
+  tasks: Task[];
+};
+
+const Calendar = ({ handleDateClick, tasks }: CalendarProps): JSX.Element => {
   // выделить сегодня
   const today = new Date();
   // состояние на текущую дату
   const [date, setDate] = useState(new Date());
   // Состояние для хранения информации о праздничных днях
-  const [holidays, setHolidays] = useState([]);
+  const [holidays, setHolidays] = useState<number[]>([]);
 
-  console.log(holidays);
-  // 0,1,7,8,11,14,15,21,22,28,29
   // Функция для загрузки информации о праздничных днях для заданного месяца
-  const dayOffApi = async (year, month) => {
+  const dayOffApi = async (year: number, month: number) => {
     try {
       const response = await fetch(
         `https://isdayoff.ru/api/getdata?year=${year}&month=${month}&cc=ru`
@@ -67,10 +71,11 @@ const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
 
     // Добавляем дни месяца
     for (let i = 1; i <= lastDate; i++) {
-      const currentDate = new Date(date.getFullYear(), date.getMonth(), i);
+      const сlickDate = new Date(date.getFullYear(), date.getMonth(), i);
+
       // выделяем сегоднящний день
-      let isToday = null;
-      if (currentDate.toDateString() === today.toDateString()) {
+      let isToday = false;
+      if (сlickDate.toDateString() === today.toDateString()) {
         isToday = true;
       }
       // выделяем выходные
@@ -81,14 +86,14 @@ const Calendar = ({ handleDateClick, tasks }): JSX.Element => {
 
       //массив с задачами для одного текущего дня
       const tasksForDay = tasks.filter(
-        (el) => el.date === currentDate.toLocaleDateString('ru-RU')
+        (el) => el.date === сlickDate.toLocaleDateString('ru-RU')
       );
       const tasksToShow = tasksForDay.slice(0, 2);
 
       days.push(
         <Day
           key={`day-${i}`}
-          currentDate={currentDate}
+          сlickDate={сlickDate}
           isToday={isToday}
           tasksForDay={tasksForDay}
           tasksToShow={tasksToShow}

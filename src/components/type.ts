@@ -1,1 +1,1 @@
-export type Task = { id: number; text: string };
+export type Task = { id: number; text: string; date: string };

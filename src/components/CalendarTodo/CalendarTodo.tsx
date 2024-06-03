@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Todo from '../Todo/Todo';
 import Calendar from '../Calendar/Calendar/Calendar';
 import { type Task } from '../type';
@@ -6,25 +6,28 @@ import s from './CalemdarTodo.module.css';
 
 const CalendarTodo = (): JSX.Element => {
   // выбранная даты для отрисовки туду
-  const [currentDate, setCurrentDate] = useState(null);
+  const [currentDate, setCurrentDate] = useState('');
   // модалка
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Состояние для всех задач
   const [tasks, setTasks] = useState<Task[]>([]);
 
   // выбор даты
-  const handleDateClick = (date: string) => {
+  const handleDateClick = useCallback((date: string) => {
     setCurrentDate(date);
     setIsModalOpen(true);
-  };
+  }, []);
 
   useEffect(() => {
     // получаем все из локалсторидж
     const keys = Object.keys(localStorage);
-    const allTasks = [];
+    const allTasks: Task[] = [];
     keys.forEach((key) => {
-      const tasks = JSON.parse(localStorage.getItem(key));
-      allTasks.push(...tasks);
+      const storage = localStorage.getItem(key);
+      if (storage) {
+        const tasks = JSON.parse(storage);
+        allTasks.push(...tasks);
+      }
     });
     setTasks(allTasks);
   }, []);

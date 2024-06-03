@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import s from './Todo.module.css';
 import { type Task } from '../type';
 
-const Todo = ({ currentDate, setIsModalOpen, setTasks }) => {
+type TodoProps = {
+  currentDate: string;
+  setIsModalOpen: (value: boolean) => void;
+  setTasks: (value: React.SetStateAction<Task[]>) => void;
+};
+
+const Todo = ({ currentDate, setIsModalOpen, setTasks }: TodoProps) => {
   // Состояние для задач текущего дня
   const [tasksForDay, setTasksForDay] = useState<Task[]>([]);
 
@@ -25,20 +31,20 @@ const Todo = ({ currentDate, setIsModalOpen, setTasks }) => {
         JSON.stringify([...tasksForDay, newTask])
       );
       // Обновляем общий список задач
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+      setTasks((prevTasks: Task[]) => [...prevTasks, newTask]);
     } else {
       alert('Поле не может быть пустым');
     }
   };
 
   // удалить задачу
-  const handleDelTask = (id) => {
+  const handleDelTask = (id: number) => {
     const delTasks = tasksForDay.filter((task) => task.id !== id);
     setTasksForDay(delTasks);
     // перезаписываем с новыми данными
     localStorage.setItem(currentDate, JSON.stringify(delTasks));
     // обновляем общее состояние
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    setTasks((prevTasks: Task[]) => prevTasks.filter((task) => task.id !== id));
   };
 
   useEffect(() => {
