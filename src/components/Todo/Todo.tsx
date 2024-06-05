@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import s from './Todo.module.css';
 import { type Task } from '../type';
+import { appСontext } from '../../context/context';
 
-type TodoProps = {
-  currentDate: string;
-  setIsModalOpen: (value: boolean) => void;
-  setTasks: (value: React.SetStateAction<Task[]>) => void;
-};
+const Todo = () => {
+  // выбранная дата, открытие/закрытие модалки
+  const { currentDate, setIsModalOpen, dispatch } = useContext(appСontext);
 
-const Todo = ({ currentDate, setIsModalOpen, setTasks }: TodoProps) => {
   // Состояние для задач текущего дня
   const [tasksForDay, setTasksForDay] = useState<Task[]>([]);
 
@@ -25,13 +23,8 @@ const Todo = ({ currentDate, setIsModalOpen, setTasks }: TodoProps) => {
       };
       setTasksForDay((prevTasks) => [...prevTasks, newTask]);
       setInput('');
-      // Сохраняем задачи в localStorage
-      localStorage.setItem(
-        currentDate,
-        JSON.stringify([...tasksForDay, newTask])
-      );
       // Обновляем общий список задач
-      setTasks((prevTasks: Task[]) => [...prevTasks, newTask]);
+      dispatch({ type: 'ADD_TASK', payload: newTask });
     } else {
       alert('Поле не может быть пустым');
     }
@@ -41,10 +34,8 @@ const Todo = ({ currentDate, setIsModalOpen, setTasks }: TodoProps) => {
   const handleDelTask = (id: number) => {
     const delTasks = tasksForDay.filter((task) => task.id !== id);
     setTasksForDay(delTasks);
-    // перезаписываем с новыми данными
-    localStorage.setItem(currentDate, JSON.stringify(delTasks));
     // обновляем общее состояние
-    setTasks((prevTasks: Task[]) => prevTasks.filter((task) => task.id !== id));
+    dispatch({ type: 'DEL_TASK', payload: id });
   };
 
   useEffect(() => {
@@ -53,6 +44,11 @@ const Todo = ({ currentDate, setIsModalOpen, setTasks }: TodoProps) => {
     const allTasks = localStorageTasks ? JSON.parse(localStorageTasks) : [];
     setTasksForDay(allTasks);
   }, [currentDate]);
+
+  // перезаписываем с новыми данными
+  useEffect(() => {
+    localStorage.setItem(currentDate, JSON.stringify(tasksForDay));
+  }, [tasksForDay]);
 
   return (
     <div className={s.modal}>

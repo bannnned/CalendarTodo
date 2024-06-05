@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import s from './Calendar.module.css';
 import EmptyDay from '../EmptyDay/EmptyDay';
 import Day from '../Day/Day';
-import { type Task } from '../../type';
 
-type CalendarProps = {
-  handleDateClick: (value: string) => void;
-  tasks: Task[];
-};
+import { appСontext } from '../../../context/context';
 
-const Calendar = ({ handleDateClick, tasks }: CalendarProps): JSX.Element => {
+const Calendar = (): JSX.Element => {
+  //
+  const { state } = useContext(appСontext);
+
   // выделить сегодня
   const today = new Date();
   // состояние на текущую дату
@@ -85,7 +84,7 @@ const Calendar = ({ handleDateClick, tasks }: CalendarProps): JSX.Element => {
       }
 
       //массив с задачами для одного текущего дня
-      const tasksForDay = tasks.filter(
+      const tasksForDay = state.tasks.filter(
         (el) => el.date === сlickDate.toLocaleDateString('ru-RU')
       );
       const tasksToShow = tasksForDay.slice(0, 2);
@@ -97,7 +96,6 @@ const Calendar = ({ handleDateClick, tasks }: CalendarProps): JSX.Element => {
           isToday={isToday}
           tasksForDay={tasksForDay}
           tasksToShow={tasksToShow}
-          handleDateClick={handleDateClick}
           index={i}
           isHoliday={isHoliday}
         />
@@ -106,6 +104,8 @@ const Calendar = ({ handleDateClick, tasks }: CalendarProps): JSX.Element => {
 
     return days;
   };
+
+  console.log('Render Calendar');
 
   // получаем празднечные дни
   useEffect(() => {

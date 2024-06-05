@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import clsx from 'clsx';
 import s from './Day.module.css';
 import { Task } from '../../type';
+import { appСontext } from '../../../context/context';
 
 type DayProps = {
   сlickDate: Date;
   isToday: boolean;
   tasksForDay: Task[];
   tasksToShow: Task[];
-  handleDateClick: (value: string) => void;
   index: number;
   isHoliday: boolean;
 };
@@ -20,10 +20,21 @@ const MemoizedDay = React.memo(function Day({
   isToday,
   tasksForDay,
   tasksToShow,
-  handleDateClick,
   index,
   isHoliday,
 }: DayProps) {
+
+  //
+  console.log('render day');
+
+  const { setCurrentDate, setIsModalOpen } = useContext(appСontext);
+
+  // клик по дню месяца
+  const handleDateClick = (date: string) => {
+    setCurrentDate(date);
+    setIsModalOpen(true);
+  };
+
   return (
     <div
       className={s.day}

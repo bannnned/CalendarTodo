@@ -1,12 +1,7 @@
-import CalendarTodo from './components/CalendarTodo/CalendarTodo';
-import "./App.css"
+import CalendarTodo from './pages/CalendarTodo/CalendarTodo';
+import './App.css';
 function App() {
-
-  return (
-    <>
-      <CalendarTodo />
-    </>
-  );
+  return <CalendarTodo />;
 }
 
 export default App;
