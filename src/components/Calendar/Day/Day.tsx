@@ -1,32 +1,15 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import clsx from 'clsx';
 import s from './Day.module.css';
-import { Task } from '../../type';
 import { appСontext } from '../../../context/context';
-
-type DayProps = {
-  сlickDate: Date;
-  isToday: boolean;
-  tasksForDay: Task[];
-  tasksToShow: Task[];
-  index: number;
-  isHoliday: boolean;
-};
+import { DayType, EmptyDayType } from '../Calendar/Calendar';
 
 // const сolors = ['#5463c0', '#a7bb40', '#44a6b0', '#f6734b', '#58a65a'];
 
-const MemoizedDay = React.memo(function Day({
-  сlickDate,
-  isToday,
-  tasksForDay,
-  tasksToShow,
-  index,
-  isHoliday,
-}: DayProps) {
+type DayProps = EmptyDayType | DayType;
 
+const Day = (day: DayProps) => {
   //
-  console.log('render day');
-
   const { setCurrentDate, setIsModalOpen } = useContext(appСontext);
 
   // клик по дню месяца
@@ -35,21 +18,23 @@ const MemoizedDay = React.memo(function Day({
     setIsModalOpen(true);
   };
 
-  return (
+  return day.isEmpty ? (
+    <div className={clsx(s.emptyDay)}></div>
+  ) : (
     <div
       className={s.day}
-      onClick={() => handleDateClick(сlickDate.toLocaleDateString('ru-RU'))}
+      onClick={() => handleDateClick(day.сlickDate.toLocaleDateString('ru-RU'))}
     >
       <p
         className={clsx(s.dayNumber, {
-          [s.today]: isToday,
-          [s.holiday]: isHoliday,
+          [s.today]: day.isToday,
+          [s.holiday]: day.isHoliday,
         })}
       >
-        {index}
+        {day.date}
       </p>
       <div className={s.dayTasks}>
-        {tasksToShow.map((el) => {
+        {day.tasksForDay.slice(0, 2).map((el) => {
           // Выбор случайного цвета из массива
           // const randomColor = сolors[Math.floor(Math.random() * сolors.length)];
           return (
@@ -62,11 +47,11 @@ const MemoizedDay = React.memo(function Day({
             </p>
           );
         })}
-        {tasksForDay.length > 2 && <p className={s.more}>more...</p>}
+        {day.tasksForDay.length > 2 && <p className={s.more}>more...</p>}
       </div>
-      {tasksForDay.length > 0 && <p className={s.hidden}>more...</p>}
+      {day.tasksForDay.length > 0 && <p className={s.hidden}>more...</p>}
     </div>
   );
-});
+};
 
-export default MemoizedDay;
+export default Day;
